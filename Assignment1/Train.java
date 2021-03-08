@@ -63,14 +63,14 @@ public abstract class Train{
         return(spamFrequency);
     }
 
-    public static Map<String,Float> getSpamProb(String spamPath, String hamPath){
+    public static Map<String,Float> getSpamProb(String spamPath, String hamPath) throws IOException{
 
-        Map<String,Float> retMap = new Map<String,Float>();
+        Map<String,Float> retMap = new HashMap<String,Float>();
 
         Map<String,Float> spamMap = getFreq(spamPath);
         Map<String,Float> hamMap = getFreq(hamPath);
 
-        Map<String,Boolean> legendKeyMap = new Map<String,Boolean>();
+        Map<String,Boolean> legendKeyMap = new HashMap<String,Boolean>();
 
         for(Map.Entry<String,Float> entry: spamMap.entrySet()){
             legendKeyMap.put(entry.getKey(), true);
@@ -79,7 +79,7 @@ public abstract class Train{
             legendKeyMap.put(entry.getKey(), true);
         }
 
-        for(Map.Entry<String,Float> entry: legendKeyMap.entrySet()){
+        for(Map.Entry<String,Boolean> entry: legendKeyMap.entrySet()){
             retMap.put(entry.getKey(),(spamMap.get(entry.getKey())/(spamMap.get(entry.getKey()) + hamMap.get(entry.getKey()))));
         }
 
