@@ -12,18 +12,16 @@ import java.util.HashMap;
 import java.lang.String;
 
 public abstract class Train{
-    public static Map<String,Integer> getFreq(String strPath) throws IOException{
+    public static Map<String,Float> getFreq(String strPath) throws IOException{
         String strRegex = "^[a-zA-Z]+$";
 
 
-        List<File> spamFileList = Files.walk(Paths.get(strPath))
-        .filter(Files::isRegularFile)
-        .map(Path::toFile)
-        .collect(Collectors.toList());
+        List<File> spamFileList = Files.walk(Paths.get(strPath)).filter(Files::isRegularFile)
+        .map(Path::toFile).collect(Collectors.toList());
 
         //System.out.println(spamFileList);//debug msg
         
-        Map<String, Integer> spamFrequency = new HashMap<String, Integer>();
+        Map<String, Float> spamFrequency = new HashMap<String, Float>();
 
         for(int i = 0; i<spamFileList.size();i++){
             File currentFile = spamFileList.get(i);
@@ -47,7 +45,7 @@ public abstract class Train{
                 if(spamFrequency.containsKey(entry.getKey())){
                     spamFrequency.put(entry.getKey(),spamFrequency.get(entry.getKey()) + 1);
                 }else{
-                    spamFrequency.put(entry.getKey(),1);
+                    spamFrequency.put(entry.getKey(),1f);
                 }
             }
 
@@ -56,6 +54,12 @@ public abstract class Train{
         }
 
         //System.out.println(spamFrequency);
+
+        int intDenom = spamFileList.size();
+        for(Map.Entry<String,Float> entry : spamFrequency.entrySet()){
+            spamFrequency.put(entry.getKey(),entry.getValue()/intDenom);
+        }
+
         return(spamFrequency);
     }
 
