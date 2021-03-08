@@ -80,7 +80,18 @@ public abstract class Train{
         }
 
         for(Map.Entry<String,Boolean> entry: legendKeyMap.entrySet()){
-            retMap.put(entry.getKey(),(spamMap.get(entry.getKey())/(spamMap.get(entry.getKey()) + hamMap.get(entry.getKey()))));
+            float probSpam = 0;
+            float probHam = 0;
+
+            if(spamMap.containsKey(entry.getKey())){
+                probSpam = spamMap.get(entry.getKey()) ;
+            }
+            if(hamMap.containsKey(entry.getKey())){
+                probHam = hamMap.get(entry.getKey());
+            }
+
+
+            retMap.put(entry.getKey(),(probSpam)/(probSpam + probHam));
         }
 
         return retMap;
