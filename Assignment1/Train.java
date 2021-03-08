@@ -63,19 +63,20 @@ public abstract class Train{
         return(spamFrequency);
     }
 
-    public static Map<String,Float> getSpamProb(String Path) throws IOException{
+    public static Map<String,Float> getSpamProb(String strPath) throws IOException{
         Map<String,Float> retMap = new HashMap<String,Float>();
 
-     
-        List<File> spamFileList = Files.walk(Paths.get(Path + "/spam").filter(Files::isRegularFile)
-        .map(Path::toFile).collect(Collectors.toList()));
 
+        List<File> spamFileList = Files.walk(Paths.get(strPath + "/spam")).filter(Files::isRegularFile)
+        .map(Path::toFile).collect(Collectors.toList());
 
-        List<File> hamFileList = Files.walk(Paths.get(Path + "/ham").filter(Files::isRegularFile)
-        .map(Path::toFile).collect(Collectors.toList()));
+        List<File> hamFileList = Files.walk(Paths.get(strPath + "/ham")).filter(Files::isRegularFile)
+        .map(Path::toFile).collect(Collectors.toList());
 
-        hamFileList += Files.walk(Paths.get(Path + "/ham2").filter(Files::isRegularFile)
-        .map(Path::toFile).collect(Collectors.toList()));
+        List<File> hamFileList2 = Files.walk(Paths.get(strPath + "/ham2")).filter(Files::isRegularFile)
+        .map(Path::toFile).collect(Collectors.toList());
+
+        hamFileList.addAll(hamFileList2);
 
 
         Map<String,Float> spamMap = getFreq(spamFileList);
