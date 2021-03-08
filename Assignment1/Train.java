@@ -12,12 +12,12 @@ import java.util.HashMap;
 import java.lang.String;
 
 public abstract class Train{
-    private static Map<String,Float> getFreq(String strPath) throws IOException{
+    private static Map<String,Float> getFreq(List<File> spamFileList) throws IOException{
         String strRegex = "^[a-zA-Z]+$";
 
 
-        List<File> spamFileList = Files.walk(Paths.get(strPath)).filter(Files::isRegularFile)
-        .map(Path::toFile).collect(Collectors.toList());
+        //List<File> spamFileList = Files.walk(Paths.get(strPath)).filter(Files::isRegularFile)
+        //.map(Path::toFile).collect(Collectors.toList());
 
         //System.out.println(spamFileList);//debug msg
         
@@ -63,12 +63,23 @@ public abstract class Train{
         return(spamFrequency);
     }
 
-    public static Map<String,Float> getSpamProb(String spamPath, String hamPath) throws IOException{
-
+    public static Map<String,Float> getSpamProb(String Path) throws IOException{
         Map<String,Float> retMap = new HashMap<String,Float>();
 
-        Map<String,Float> spamMap = getFreq(spamPath);
-        Map<String,Float> hamMap = getFreq(hamPath);
+     
+        List<File> spamFileList = Files.walk(Paths.get(Path + "/spam").filter(Files::isRegularFile)
+        .map(Path::toFile).collect(Collectors.toList()));
+
+
+        List<File> hamFileList = Files.walk(Paths.get(Path + "/ham").filter(Files::isRegularFile)
+        .map(Path::toFile).collect(Collectors.toList()));
+
+        hamFileList += Files.walk(Paths.get(Path + "/ham2").filter(Files::isRegularFile)
+        .map(Path::toFile).collect(Collectors.toList()));
+
+
+        Map<String,Float> spamMap = getFreq(spamFileList);
+        Map<String,Float> hamMap = getFreq(hamFileList);
 
         Map<String,Boolean> legendKeyMap = new HashMap<String,Boolean>();
 
