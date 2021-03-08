@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.lang.String;
 
 public abstract class Train{
-    public static Map<String,Float> getFreq(String strPath) throws IOException{
+    private static Map<String,Float> getFreq(String strPath) throws IOException{
         String strRegex = "^[a-zA-Z]+$";
 
 
@@ -34,7 +34,7 @@ public abstract class Train{
                 String[] strWords = strLine.split(" ");
 
                 for(int j = 0;j < strWords.length;j++){
-                    strWords[j].toLowerCase();
+                    strWords[j] = strWords[j].toLowerCase();
                     if ((strWords[j].length() > 1) && (strWords[j].matches(strRegex))){
                         currentMap.putIfAbsent(strWords[j], true);
                     }
@@ -63,6 +63,27 @@ public abstract class Train{
         return(spamFrequency);
     }
 
+    public static Map<String,Float> getSpamProb(String spamPath, String hamPath){
 
+        Map<String,Float> retMap = new Map<String,Float>();
+
+        Map<String,Float> spamMap = getFreq(spamPath);
+        Map<String,Float> hamMap = getFreq(hamPath);
+
+        Map<String,Boolean> legendKeyMap = new Map<String,Boolean>();
+
+        for(Map.Entry<String,Float> entry: spamMap.entrySet()){
+            legendKeyMap.put(entry.getKey(), true);
+        }
+        for(Map.Entry<String,Float> entry: hamMap.entrySet()){
+            legendKeyMap.put(entry.getKey(), true);
+        }
+
+        for(Map.Entry<String,Float> entry: legendKeyMap.entrySet()){
+            retMap.put(entry.getKey(),(spamMap.get(entry.getKey())/(spamMap.get(entry.getKey()) + hamMap.get(entry.getKey()))));
+        }
+
+        return retMap;
+    }
    
 }
