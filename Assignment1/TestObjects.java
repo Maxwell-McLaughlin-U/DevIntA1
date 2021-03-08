@@ -9,21 +9,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class TestObjects {
-    double n = 0.0;
-    private File dataDir;
-    double spamProb = 0.0;
-    private HashMap<String,Double> bayesMap = new HashMap<>();
-    private Map<String,Integer> wordCounts = new TreeMap<>();
-    private TreeMap<String,Integer> tempWordCounts = new TreeMap<>();
+public abstract class TestObjects {
+    private static double n = 0.0;
+    private static File dataDir;
+    private static double spamProb = 0.0;
+    private static String userPath;
+    private static Map<String,Float> bayesMap;
+
+    private static Map<String,Integer> wordCounts = new TreeMap<>();
+    private static TreeMap<String,Integer> tempWordCounts = new TreeMap<>();
     //formula
     // n += Math.log(1-Train.getSpamProb(key)) - Math.log(Train.getSpamProb.get(key));
 
-    public TestObjects(String path){
+    public TestObjects(String path, String userPath) throws IOException{
         this.dataDir = new File(path);
+        this.userPath = userPath;
+        bayesMap = Train.getSpamProb(userPath);
     }
 
-    public ObservableList<TestFile> getSpamData() {
+    public static ObservableList<TestFile> getSpamData() {
         ObservableList<TestFile> spamResults = FXCollections.observableArrayList();
 
         File[] dataDirList = dataDir.listFiles();
@@ -43,14 +47,17 @@ public class TestObjects {
 
 
                 for(String word : wordCounts.keySet()) {
-                    if(bayesMap.get(word) != null) {
-                        double bayesProb = wordCounts.get(word);
-                        if(bayesProb < 1)
-                            n += (Math.log(1.0 - bayesProb) - Math.log(bayesProb));
+                    if(bayesMap.get(word) == null){
+                        spamProb = 0.0;
+                    }
+                    else if(bayesMap.get(word) != null) {
+                        n += (Math.log(1.0 - bayesMap.get(word)) - Math.log(bayesMap.get(word)));
+                        spamProb = 1.0/(1.0+Math.pow(Math.E,n));
                     }
                 }
 
-                spamProb = 1.0/(1.0+Math.pow(Math.E,n));
+                //spamProb = 1.0/(1.0+Math.pow(Math.E,n));
+
 
                 if(spamProb > 0.5) {
                     TestFile spamData = new TestFile(dataDir.getName(),"spam",spamProb);
@@ -70,14 +77,14 @@ public class TestObjects {
 
     }
 
-    private boolean isValidWord(String word){
+    private static boolean isValidWord(String word){
         String allLetters = "^[a-zA-Z]+$";
         // returns true if the word is composed by only letters otherwise returns false;
         return word.matches(allLetters);
 
     }
 
-    private void countWords(String word){
+    private static void countWords(String word){
         if(wordCounts.containsKey(word)){
             int previous = wordCounts.get(word);
             tempWordCounts.put(word, previous+1);
