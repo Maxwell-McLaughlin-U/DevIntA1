@@ -83,6 +83,7 @@ public abstract class Train{
             retMap.put(entry.getKey(),(spamMap.get(entry.getKey())/(spamMap.get(entry.getKey()) + hamMap.get(entry.getKey()))));
         }
 
+        return retMap;
     }
    
 }
