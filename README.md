@@ -31,6 +31,7 @@ Improvments
 We improved the project by making sure that the words read into the file during training is lower cased so the same words are not counted as two different words. For example, "apple" and "Apples" will be known as one word. In addition, we included the files that have a file with probability of 1 given that the word in the file is a spam word, to the spam probability calculation. The probability of 1.0 could not be used in the spam probability calculation, so it was made to 0.9, to round as close to 1.0 as possible. In addition, when the spam emails were read during the testing phase of the project, if the probability of a file was 0 given that a word in the file is spam, it was made to 0.5, since the Bayesian model predicts 50% of emails are assumed to be spam.
 
 References
+
 [1] https://docs.oracle.com/javafx/2/ui_controls/jfxpub-ui_controls.htm
 
 [2] https://en.wikipedia.org/wiki/Bayesian_probability
